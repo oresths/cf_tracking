@@ -70,7 +70,8 @@ include_directories(${CF_TCLAP_DIR}
                     ${CF_PIOTR_DIR}/src
                     src/main)
 
-include_directories(src/cf_libs/kcf
+include_directories(
+#src/cf_libs/kcf
                     src/cf_libs/dsst
                     src/cf_libs/common)
                     
@@ -113,11 +114,4 @@ add_executable(DSSTcpp
     ${CF_LIB_COMMON_SOURCES})
 target_link_libraries(DSSTcpp ${OpenCV_LIBS})
 
-add_executable(KCFcpp
-    src/main/main_kcf.cpp
-    src/cf_libs/kcf/kcf_debug.hpp
-    src/cf_libs/kcf/kcf_tracker.hpp
-    ${CF_MAIN_SOURCES}
-    ${CF_LIB_COMMON_SOURCES})
-target_link_libraries(KCFcpp ${OpenCV_LIBS})
 

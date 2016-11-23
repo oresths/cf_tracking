@@ -71,6 +71,7 @@ _cmd(_windowTitle.c_str(), ' ', "0.1"),
 _debug(0)
 {
     _tracker = 0;
+    _frameIdx = 0;
 }
 
 TrackerRun::~TrackerRun()
@@ -85,78 +86,116 @@ TrackerRun::~TrackerRun()
     }
 }
 
-Parameters TrackerRun::parseCmdArgs(int argc, const char** argv)
+Parameters TrackerRun::parseCmdArgs()
 {
     Parameters paras;
 
-    try{
-        ValueArg<int> deviceIdArg("c", "cam", "Camera device id", false, 0, "integer", _cmd);
-        ValueArg<string> seqPathArg("s", "seq", "Path to sequence", false, "", "path", _cmd);
-        ValueArg<string> expansionArg("i", "image_name_expansion", "image name expansion (only necessary for image sequences) ie. /%.05d.jpg", false, "", "string", _cmd);
-        ValueArg<string> initBbArg("b", "box", "Init Bounding Box", false, "-1,-1,-1,-1", "x,y,w,h", _cmd);
-        SwitchArg noShowOutputSw("n", "no-show", "Don't show video", _cmd, false);
-        ValueArg<string> outputPathArg("o", "out", "Path to output file", false, "", "file path", _cmd);
-        ValueArg<string> imgExportPathArg("e", "export", "Path to output folder where the images will be saved with BB", false, "", "folder path", _cmd);
-        SwitchArg pausedSw("p", "paused", "Start paused", _cmd, false);
-        SwitchArg repeatSw("r", "repeat", "endless loop the same sequence", _cmd, false);
-        ValueArg<int> startFrameArg("", "start_frame", "starting frame idx (starting at 1 for the first frame)", false, 1, "integer", _cmd);
-        SwitchArg dummySequenceSw("", "mock_sequence", "Instead of processing a regular sequence, a dummy sequence is used to evaluate run time performance.", _cmd, false);
-        _tracker = parseTrackerParas(_cmd, argc, argv);
+    _tracker = parseTrackerParas();
 
-        paras.device = deviceIdArg.getValue();
-        paras.sequencePath = seqPathArg.getValue();
-        string expansion = expansionArg.getValue();
+    paras.device = 0;
+    paras.sequencePath = "sample_sequence_compressed";
+    string expansion = "/%.05d.jpg";
 
-        size_t foundExpansion = expansion.find_first_of('.');
+    size_t foundExpansion = expansion.find_first_of('.');
 
-        if (foundExpansion != string::npos)
-            expansion.erase(foundExpansion, 1);
+    if (foundExpansion != string::npos)
+        expansion.erase(foundExpansion, 1);
 
-        paras.expansion = expansion;
+    paras.expansion = expansion;
 
-        paras.outputFilePath = outputPathArg.getValue();
-        paras.imgExportPath = imgExportPathArg.getValue();
-        paras.showOutput = !noShowOutputSw.getValue();
-        paras.paused = pausedSw.getValue();
-        paras.repeat = repeatSw.getValue();
-        paras.startFrame = startFrameArg.getValue();
+    paras.outputFilePath = "";
+    paras.imgExportPath = "";
+    paras.showOutput = true;
+    paras.paused = false;
+    paras.repeat = false;
+    paras.startFrame = 1;
 
-        stringstream initBbSs(initBbArg.getValue());
+    stringstream initBbSs("707,362,40,97");
 
-        double initBb[4];
+    double initBb[4];
 
-        for (int i = 0; i < 4; ++i)
-        {
-            string singleValueStr;
-            getline(initBbSs, singleValueStr, ',');
-            initBb[i] = static_cast<double>(stod(singleValueStr.c_str()));
-        }
-
-        paras.initBb = Rect_<double>(initBb[0], initBb[1], initBb[2], initBb[3]);
-
-        if (_debug != 0)
-            _debug->init(paras.outputFilePath + "_debug");
-
-        paras.isMockSequence = dummySequenceSw.getValue();
-    }
-    catch (ArgException &argException)
+    for (int i = 0; i < 4; ++i)
     {
-        cerr << "Command Line Argument Exception: " << argException.what() << endl;
-        exit(-1);
+        string singleValueStr;
+        getline(initBbSs, singleValueStr, ',');
+        initBb[i] = static_cast<double>(stod(singleValueStr.c_str()));
     }
-    // TODO: properly check every argument and throw exceptions accordingly
-    catch (...)
-    {
-        cerr << "Command Line Argument Exception!" << endl;
-        exit(-1);
-    }
+
+    paras.initBb = Rect_<double>(initBb[0], initBb[1], initBb[2], initBb[3]);
+
+    if (_debug != 0)
+        _debug->init(paras.outputFilePath + "_debug");
+
+    paras.isMockSequence = false;
+
+//    try{
+//        ValueArg<int> deviceIdArg("c", "cam", "Camera device id", false, 0, "integer", _cmd);
+//        ValueArg<string> seqPathArg("s", "seq", "Path to sequence", false, "", "path", _cmd);
+//        ValueArg<string> expansionArg("i", "image_name_expansion", "image name expansion (only necessary for image sequences) ie. /%.05d.jpg", false, "", "string", _cmd);
+//        ValueArg<string> initBbArg("b", "box", "Init Bounding Box", false, "-1,-1,-1,-1", "x,y,w,h", _cmd);
+//        SwitchArg noShowOutputSw("n", "no-show", "Don't show video", _cmd, false);
+//        ValueArg<string> outputPathArg("o", "out", "Path to output file", false, "", "file path", _cmd);
+//        ValueArg<string> imgExportPathArg("e", "export", "Path to output folder where the images will be saved with BB", false, "", "folder path", _cmd);
+//        SwitchArg pausedSw("p", "paused", "Start paused", _cmd, false);
+//        SwitchArg repeatSw("r", "repeat", "endless loop the same sequence", _cmd, false);
+//        ValueArg<int> startFrameArg("", "start_frame", "starting frame idx (starting at 1 for the first frame)", false, 1, "integer", _cmd);
+//        SwitchArg dummySequenceSw("", "mock_sequence", "Instead of processing a regular sequence, a dummy sequence is used to evaluate run time performance.", _cmd, false);
+//        _tracker = parseTrackerParas(_cmd, argc, argv);
+//
+//        paras.device = deviceIdArg.getValue();
+//        paras.sequencePath = seqPathArg.getValue();
+//        string expansion = expansionArg.getValue();
+//
+//        size_t foundExpansion = expansion.find_first_of('.');
+//
+//        if (foundExpansion != string::npos)
+//            expansion.erase(foundExpansion, 1);
+//
+//        paras.expansion = expansion;
+//
+//        paras.outputFilePath = outputPathArg.getValue();
+//        paras.imgExportPath = imgExportPathArg.getValue();
+//        paras.showOutput = !noShowOutputSw.getValue();
+//        paras.paused = pausedSw.getValue();
+//        paras.repeat = repeatSw.getValue();
+//        paras.startFrame = startFrameArg.getValue();
+//
+//        stringstream initBbSs(initBbArg.getValue());
+//
+//        double initBb[4];
+//
+//        for (int i = 0; i < 4; ++i)
+//        {
+//            string singleValueStr;
+//            getline(initBbSs, singleValueStr, ',');
+//            initBb[i] = static_cast<double>(stod(singleValueStr.c_str()));
+//        }
+//
+//        paras.initBb = Rect_<double>(initBb[0], initBb[1], initBb[2], initBb[3]);
+//
+//        if (_debug != 0)
+//            _debug->init(paras.outputFilePath + "_debug");
+//
+//        paras.isMockSequence = dummySequenceSw.getValue();
+//    }
+//    catch (ArgException &argException)
+//    {
+//        cerr << "Command Line Argument Exception: " << argException.what() << endl;
+//        exit(-1);
+//    }
+//    // TODO: properly check every argument and throw exceptions accordingly
+//    catch (...)
+//    {
+//        cerr << "Command Line Argument Exception!" << endl;
+//        exit(-1);
+//    }
 
     return paras;
 }
 
 bool TrackerRun::start(int argc, const char** argv)
 {
-    _paras = parseCmdArgs(argc, argv);
+    _paras = parseCmdArgs();
 
     while (true)
     {
@@ -177,31 +216,33 @@ bool TrackerRun::start(int argc, const char** argv)
 
 bool TrackerRun::init()
 {
-    ImgAcqParas imgAcqParas;
-    imgAcqParas.device = _paras.device;
-    imgAcqParas.expansionStr = _paras.expansion;
-    imgAcqParas.isMock = _paras.isMockSequence;
-    imgAcqParas.sequencePath = _paras.sequencePath;
-    _cap.open(imgAcqParas);
+//    ImgAcqParas imgAcqParas;
+//    imgAcqParas.device = _paras.device;
+//    imgAcqParas.expansionStr = _paras.expansion;
+//    imgAcqParas.isMock = _paras.isMockSequence;
+//    imgAcqParas.sequencePath = _paras.sequencePath;
+//    _cap.open(imgAcqParas);
+//
+//    if (!_cap.isOpened())
+//    {
+//        cerr << "Could not open device/sequence/video!" << endl;
+//        exit(-1);
+//    }
+//
+//    int startIdx = _paras.startFrame - 1;
+//
+//    // HACKFIX:
+//    //_cap.set(CV_CAP_PROP_POS_FRAMES, startIdx);
+//    // OpenCV's _cap.set in combination with image sequences is
+//    // currently bugged on Linux
+//    // TODO: review when OpenCV 3.0 is stable
+//    cv::Mat temp;
+//
+//    for (int i = 0; i < startIdx; ++i)
+//        _cap >> temp;
+//    // HACKFIX END
 
-    if (!_cap.isOpened())
-    {
-        cerr << "Could not open device/sequence/video!" << endl;
-        exit(-1);
-    }
-
-    int startIdx = _paras.startFrame - 1;
-
-    // HACKFIX:
-    //_cap.set(CV_CAP_PROP_POS_FRAMES, startIdx);
-    // OpenCV's _cap.set in combination with image sequences is
-    // currently bugged on Linux
-    // TODO: review when OpenCV 3.0 is stable
-    cv::Mat temp;
-
-    for (int i = 0; i < startIdx; ++i)
-        _cap >> temp;
-    // HACKFIX END
+	_paras = parseCmdArgs();
 
     if (_paras.showOutput)
         namedWindow(_windowTitle.c_str());
@@ -245,7 +286,9 @@ bool TrackerRun::run()
 
     while (true)
     {
-        success = update();
+//        success = update();
+    	success = false;
+    	std::cout << "Shouldn't have come here" << std::endl;
 
         if (!success)
             break;
@@ -256,14 +299,15 @@ bool TrackerRun::run()
     return true;
 }
 
-bool TrackerRun::update()
+bool TrackerRun::update(const cv::Mat im)
 {
     int64 tStart = 0;
     int64 tDuration = 0;
 
     if (!_isPaused || _frameIdx == 0 || _isStep)
     {
-        _cap >> _image;
+//        _cap >> _image;
+    	_image = im;
 
         if (_image.empty())
             return false;
