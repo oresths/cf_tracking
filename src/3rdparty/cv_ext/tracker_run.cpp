@@ -110,6 +110,11 @@ Parameters TrackerRun::parseCmdArgs()
     paras.repeat = false;
     paras.startFrame = 1;
 
+    paras.isMockSequence = false;
+
+    if (_debug != 0)
+        _debug->init(paras.outputFilePath + "_debug");
+
     stringstream initBbSs("707,362,40,97");
 
     double initBb[4];
@@ -123,10 +128,6 @@ Parameters TrackerRun::parseCmdArgs()
 
     paras.initBb = Rect_<double>(initBb[0], initBb[1], initBb[2], initBb[3]);
 
-    if (_debug != 0)
-        _debug->init(paras.outputFilePath + "_debug");
-
-    paras.isMockSequence = false;
 
 //    try{
 //        ValueArg<int> deviceIdArg("c", "cam", "Camera device id", false, 0, "integer", _cmd);

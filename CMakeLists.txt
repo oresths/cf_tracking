@@ -68,7 +68,8 @@ include_directories(${CF_TCLAP_DIR}
                     ${CF_CV_EXT_DIR}
                     ${CF_PIOTR_DIR}
                     ${CF_PIOTR_DIR}/src
-                    src/main)
+                    src/main
+                    src)
 
 include_directories(
 #src/cf_libs/kcf
@@ -100,6 +101,7 @@ set(CF_LIB_COMMON_SOURCES
 set(CF_MAIN_SOURCES
     src/main/image_acquisition.hpp
     src/main/image_acquisition.cpp
+    src/main/DSSTVisualTracker.cpp
     ${CF_CV_EXT_DIR}/init_box_selector.hpp
     ${CF_CV_EXT_DIR}/init_box_selector.cpp
     ${CF_CV_EXT_DIR}/tracker_run.hpp

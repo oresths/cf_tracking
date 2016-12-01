@@ -32,6 +32,7 @@
 #include <unistd.h>
 
 #include "dsst_interface.hpp"
+#include "DSSTVisualTracker.hpp"
 
 int main(int argc, const char** argv)
 {
@@ -42,7 +43,13 @@ int main(int argc, const char** argv)
 
   cv::Mat frame;
 
-  DsstInterface dsst;
+  cv::Rect init_ROI(707,362,40,97);
+  eSensor camera = MONOCULAR;
+  vector<string> args = {""};
+
+//  DsstInterface dsst;
+  DSSTVisualTracker tracker;
+  tracker.Init(args, camera, init_ROI);
 
   while (1)
   {
@@ -52,7 +59,8 @@ int main(int argc, const char** argv)
     if (!frame.empty())
     {
       //problem in fhog memory deallocation with 1-channel (gray)
-      dsst.dsstUpdate(frame);
+//      dsst.dsstUpdate(frame);
+    	tracker.TrackMonocular(frame, 1);
     }
 
     usleep(500);
