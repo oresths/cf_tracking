@@ -93,7 +93,7 @@ public:
     paras.templateSize = 100; //template size
     paras.cellSize = 1; //
 
-    paras.enableTrackingLossDetection = false; //
+    paras.enableTrackingLossDetection = true; //
     paras.psrThreshold = 0; //
     paras.psrPeakDel = 1; //
 

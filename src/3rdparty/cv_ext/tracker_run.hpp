@@ -58,6 +58,7 @@
 
 #include <tclap/CmdLine.h>
 #include <fstream>
+#include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include "cf_tracker.hpp"
 #include "tracker_debug.hpp"
@@ -83,9 +84,10 @@ class TrackerRun
 public:
     TrackerRun(std::string windowTitle);
     virtual ~TrackerRun();
-    bool start(int argc, const char** argv);
-    bool update(const cv::Mat im);
-    bool init();
+//    bool start(int argc, const char** argv);
+//    bool update(const cv::Mat im);
+    double update(const cv::Mat im, cv::Rect &bound_box);
+    bool init(const cv::Rect& initialROI);
     void setTrackerDebug(cf_tracking::TrackerDebug* debug);
 
 private:

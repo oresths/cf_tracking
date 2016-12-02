@@ -31,7 +31,6 @@
 
 #include <unistd.h>
 
-#include "dsst_interface.hpp"
 #include "DSSTVisualTracker.hpp"
 
 int main(int argc, const char** argv)
@@ -47,7 +46,6 @@ int main(int argc, const char** argv)
   eSensor camera = MONOCULAR;
   vector<string> args = {""};
 
-//  DsstInterface dsst;
   DSSTVisualTracker tracker;
   tracker.Init(args, camera, init_ROI);
 
@@ -59,7 +57,6 @@ int main(int argc, const char** argv)
     if (!frame.empty())
     {
       //problem in fhog memory deallocation with 1-channel (gray)
-//      dsst.dsstUpdate(frame);
     	tracker.TrackMonocular(frame, 1);
     }
 

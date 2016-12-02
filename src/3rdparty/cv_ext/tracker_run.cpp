@@ -115,19 +115,6 @@ Parameters TrackerRun::parseCmdArgs()
     if (_debug != 0)
         _debug->init(paras.outputFilePath + "_debug");
 
-    stringstream initBbSs("707,362,40,97");
-
-    double initBb[4];
-
-    for (int i = 0; i < 4; ++i)
-    {
-        string singleValueStr;
-        getline(initBbSs, singleValueStr, ',');
-        initBb[i] = static_cast<double>(stod(singleValueStr.c_str()));
-    }
-
-    paras.initBb = Rect_<double>(initBb[0], initBb[1], initBb[2], initBb[3]);
-
 
 //    try{
 //        ValueArg<int> deviceIdArg("c", "cam", "Camera device id", false, 0, "integer", _cmd);
@@ -194,28 +181,28 @@ Parameters TrackerRun::parseCmdArgs()
     return paras;
 }
 
-bool TrackerRun::start(int argc, const char** argv)
-{
-    _paras = parseCmdArgs();
+//bool TrackerRun::start(int argc, const char** argv)
+//{
+//    _paras = parseCmdArgs();
+//
+//    while (true)
+//    {
+//        if (init() == false)
+//            return false;
+//        if (run() == false)
+//            return false;
+//
+//        if (!_paras.repeat || _exit)
+//            break;
+//
+//        _boundingBox = _paras.initBb;
+//        _isTrackerInitialzed = false;
+//    }
+//
+//    return true;
+//}
 
-    while (true)
-    {
-        if (init() == false)
-            return false;
-        if (run() == false)
-            return false;
-
-        if (!_paras.repeat || _exit)
-            break;
-
-        _boundingBox = _paras.initBb;
-        _isTrackerInitialzed = false;
-    }
-
-    return true;
-}
-
-bool TrackerRun::init()
+bool TrackerRun::init(const cv::Rect& initialROI)
 {
 //    ImgAcqParas imgAcqParas;
 //    imgAcqParas.device = _paras.device;
@@ -244,6 +231,8 @@ bool TrackerRun::init()
 //    // HACKFIX END
 
 	_paras = parseCmdArgs();
+
+    _paras.initBb = Rect_<double>(initialROI);
 
     if (_paras.showOutput)
         namedWindow(_windowTitle.c_str());
@@ -300,7 +289,7 @@ bool TrackerRun::run()
     return true;
 }
 
-bool TrackerRun::update(const cv::Mat im)
+double TrackerRun::update(const cv::Mat im, cv::Rect &bound_box)
 {
     int64 tStart = 0;
     int64 tDuration = 0;
@@ -376,6 +365,12 @@ bool TrackerRun::update(const cv::Mat im)
 
     double fps = static_cast<double>(getTickFrequency() / tDuration);
     printResults(_boundingBox, _targetOnFrame, fps);
+
+    if (_targetOnFrame)
+    	bound_box = _boundingBox;
+    else
+    	bound_box = cv::Rect(0,0,0,0);
+
 
     if (_paras.showOutput)
     {
@@ -455,7 +450,8 @@ bool TrackerRun::update(const cv::Mat im)
         }
     }
 
-    return true;
+//    return true;
+    return fps;
 }
 
 void TrackerRun::printResults(const cv::Rect_<double>& boundingBox, bool isConfident, double fps)

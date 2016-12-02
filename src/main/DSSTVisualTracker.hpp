@@ -45,7 +45,7 @@ private:
 //	std::mutex mMutexFinish;
 //	cv::Mat frame;
 //	std::mutex mMutexImg;
-	cv::Rect targetR;
+	cv::Rect targetROI;
 	std::mutex mMutexTar;
 //	int frame_number;
 //	std::mutex mMutexSta;
