@@ -58,6 +58,8 @@
 
 #include <tclap/CmdLine.h>
 #include <fstream>
+#include <vector>
+#include <string>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include "cf_tracker.hpp"
@@ -87,18 +89,18 @@ public:
 //    bool start(int argc, const char** argv);
 //    bool update(const cv::Mat im);
     double update(const cv::Mat im, cv::Rect &bound_box);
-    bool init(const cv::Rect& initialROI);
+    bool init(const cv::Rect& initialROI, const std::vector<std::string> & arguments, const bool showOutput = false);
     void setTrackerDebug(cf_tracking::TrackerDebug* debug);
 
 private:
-    Parameters parseCmdArgs();
+    Parameters parseCmdArgs(const std::vector<std::string> & arguments);
 //    bool init();
     bool run();
 //    bool update();
     void printResults(const cv::Rect_<double>& boundingBox, bool isConfident, double fps);
 
 protected:
-    virtual cf_tracking::CfTracker* parseTrackerParas() = 0;
+    virtual cf_tracking::CfTracker* parseTrackerParas(const std::vector<std::string> & arguments) = 0;
 private:
     cv::Mat _image;
     cf_tracking::CfTracker* _tracker;

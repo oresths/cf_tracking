@@ -86,11 +86,11 @@ TrackerRun::~TrackerRun()
     }
 }
 
-Parameters TrackerRun::parseCmdArgs()
+Parameters TrackerRun::parseCmdArgs(const vector<string> & arguments)
 {
     Parameters paras;
 
-    _tracker = parseTrackerParas();
+    _tracker = parseTrackerParas(arguments);
 
     paras.device = 0;
     paras.sequencePath = "sample_sequence_compressed";
@@ -105,7 +105,7 @@ Parameters TrackerRun::parseCmdArgs()
 
     paras.outputFilePath = "";
     paras.imgExportPath = "";
-    paras.showOutput = true;
+//    paras.showOutput = true;
     paras.paused = false;
     paras.repeat = false;
     paras.startFrame = 1;
@@ -202,7 +202,7 @@ Parameters TrackerRun::parseCmdArgs()
 //    return true;
 //}
 
-bool TrackerRun::init(const cv::Rect& initialROI)
+bool TrackerRun::init(const cv::Rect& initialROI, const vector<string> & arguments, const bool showOutput)
 {
 //    ImgAcqParas imgAcqParas;
 //    imgAcqParas.device = _paras.device;
@@ -230,9 +230,10 @@ bool TrackerRun::init(const cv::Rect& initialROI)
 //        _cap >> temp;
 //    // HACKFIX END
 
-	_paras = parseCmdArgs();
+	_paras = parseCmdArgs(arguments);
 
     _paras.initBb = Rect_<double>(initialROI);
+    _paras.showOutput = showOutput;
 
     if (_paras.showOutput)
         namedWindow(_windowTitle.c_str());

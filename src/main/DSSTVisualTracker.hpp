@@ -32,24 +32,12 @@ public:
 	bool isFinished();
 
 private:
-
-//	bool CheckNewFrames();
-//	bool CheckFinish();
-//	void SetFinish();
-
 	DsstTrackerRun tracker;
-//	std::ofstream outFile;
 
-//	bool mbFinishRequested;
-//	bool mbFinished;
-//	std::mutex mMutexFinish;
-//	cv::Mat frame;
-//	std::mutex mMutexImg;
 	cv::Rect targetROI;
-	std::mutex mMutexTar;
-//	int frame_number;
-//	std::mutex mMutexSta;
 	cv::Rect2f initBB;
+
+	std::mutex mMutexTar;
 };
 
 #endif /* SRC_MAIN_DSSTVISUALTRACKER_HPP_ */

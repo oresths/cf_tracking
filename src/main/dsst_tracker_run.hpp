@@ -33,6 +33,7 @@
 #define CF_TRACKING_SRC_MAIN_DSST_TRACKER_RUN_HPP_
 
 #include <opencv2/core/core.hpp>
+#include <string>
 
 #include "dsst_tracker.hpp"
 #include "tracker_run.hpp"
@@ -50,7 +51,7 @@ public:
   {
   }
 
-  virtual cf_tracking::CfTracker* parseTrackerParas()
+  virtual cf_tracking::CfTracker* parseTrackerParas(const vector<string> & arguments)
   {
     cf_tracking::DsstParameters paras;
 
@@ -83,28 +84,51 @@ public:
 //
 //        cmd.parse(argc, argv);
 
+    paras.padding = static_cast<double>(stod(arguments[0]));
+	paras.outputSigmaFactor = static_cast<double>(stod(arguments[1]));
+	paras.lambda = static_cast<double>(stod(arguments[2]));
+	paras.learningRate = static_cast<double>(stod(arguments[3]));
+	paras.cellSize = static_cast<int>(stoi(arguments[4]));
+
+	paras.scaleSigmaFactor = static_cast<double>(stod(arguments[5]));
+	paras.scaleStep = static_cast<double>(stod(arguments[6]));
+	paras.scaleCellSize = static_cast<int>(stoi(arguments[7]));
+	paras.numberOfScales = static_cast<int>(stoi(arguments[8]));
+	paras.psrThreshold = static_cast<double>(stod(arguments[9]));
+	paras.psrPeakDel = static_cast<int>(stoi(arguments[10]));
+	paras.templateSize = static_cast<int>(stoi(arguments[11]));
+
+	bool enableTrackingLossDetection = false, originalVersion = false;
+
+	if (arguments[12] == "true") enableTrackingLossDetection = true;
+	paras.enableTrackingLossDetection = enableTrackingLossDetection;
+
+	if (arguments[13] == "true") originalVersion = true;
 // use original paper parameters from
 // Danelljan, Martin, et al., "Accurate scale estimation for robust visual tracking," in Proc. BMVC, 2014
+    if (originalVersion)	//arguments[13] = originalVersion
+    {
+		paras.padding = static_cast<double>(1); //padding around the target
+		paras.outputSigmaFactor = static_cast<double>(1.0 / 16.0); //spatial bandwitdh of the target
+		paras.lambda = static_cast<double>(0.01); //regularization factor
+		paras.learningRate = static_cast<double>(0.025); //interpolation factor for learning
+		paras.templateSize = 100; //template size
+		paras.cellSize = 1; //cell size of fhog
 
-    paras.padding = static_cast<double>(1); //
-    paras.outputSigmaFactor = static_cast<double>(1.0 / 16.0); //
-    paras.lambda = static_cast<double>(0.01); //
-    paras.learningRate = static_cast<double>(0.025); //
-    paras.templateSize = 100; //template size
-    paras.cellSize = 1; //
+		paras.enableTrackingLossDetection = true; //Enable the tracking loss detection!
+		paras.psrThreshold = 0; //if psr is lower than psr threshold, tracking will stop
+		paras.psrPeakDel = 1; //amount of pixels that are deleted for psr calculation around the peak (1 means that a window
+							  //of 3 by 3 is deleted; 0 means that max response is deleted; 2 * peak_del + 1 pixels are deleted)
 
-    paras.enableTrackingLossDetection = true; //
-    paras.psrThreshold = 0; //
-    paras.psrPeakDel = 1; //
+		paras.enableScaleEstimator = true; //
+		paras.scaleSigmaFactor = static_cast<double>(0.25); //spatial bandwitdh of the target(scale)
+		paras.scaleStep = static_cast<double>(1.02); //scale_step
+		paras.scaleCellSize = 4; //cell size of fhog (scale filter)
+		paras.numberOfScales = 33; //number of scale steps
 
-    paras.enableScaleEstimator = true; //
-    paras.scaleSigmaFactor = static_cast<double>(0.25); //
-    paras.scaleStep = static_cast<double>(1.02); //
-    paras.scaleCellSize = 4; //
-    paras.numberOfScales = 33; //
-
-    paras.originalVersion = true; //
-    paras.resizeType = cv::INTER_AREA; //
+		paras.originalVersion = true; //
+		paras.resizeType = cv::INTER_AREA; //
+    }
 
 #ifdef DEBUG_TRACKER
     setTrackerDebug(&_debug); //Output Debug info!

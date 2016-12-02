@@ -14,7 +14,8 @@ void DSSTVisualTracker::Init(const vector<string> &arguments,
 		const eSensor sensor, const cv::Rect &initialROI) {
 	this->mSensor = sensor;
 
-	tracker.init(initialROI);
+	//Use false to hide visual output
+	tracker.init(initialROI, arguments, true);
 }
 
 void DSSTVisualTracker::TrackMonocular(const cv::Mat &im,

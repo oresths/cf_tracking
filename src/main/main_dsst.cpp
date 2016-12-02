@@ -33,35 +33,52 @@
 
 #include "DSSTVisualTracker.hpp"
 
-int main(int argc, const char** argv)
-{
-  cv::VideoCapture cap("/mnt/hgfs/Vision/Dataset UAV123/UAV123/data_seq/UAV123/bike1/%06d.jpg");
-  // Check if video device can be opened with the given index
-  if (!cap.isOpened())
-    return 1;
+int main(int argc, const char** argv) {
+	cv::VideoCapture cap(
+			"/mnt/hgfs/Vision/Dataset UAV123/UAV123/data_seq/UAV123/bike1/%06d.jpg");
+	// Check if video device can be opened with the given index
+	if (!cap.isOpened())
+		return 1;
 
-  cv::Mat frame;
+	cv::Mat frame;
 
-  cv::Rect init_ROI(707,362,40,97);
-  eSensor camera = MONOCULAR;
-  vector<string> args = {""};
+	cv::Rect init_ROI(707, 362, 40, 97);
+	eSensor camera = MONOCULAR;
+	vector<string> args;
 
-  DSSTVisualTracker tracker;
-  tracker.Init(args, camera, init_ROI);
+	args.push_back("1.6"); //padding around the target - padding
+	args.push_back("0.05"); //spatial bandwitdh of the target - outputSigmaFactor
+	args.push_back("0.01"); //regularization factor - lambda
+	args.push_back("0.012"); //interpolation factor for learning - learningRate
+	args.push_back("2"); //cell size of fhog - cellSize
+	args.push_back("0.25"); //spatial bandwitdh of the target(scale) - scaleSigmaFactor
+	args.push_back("1.02"); //scale_step - scaleStep
+	args.push_back("4"); //cell size of fhog (scale filter) - scaleCellSize
+	args.push_back("33"); //number of scale steps - numberOfScales
+	args.push_back("13.5"); //if psr is lower than psr threshold, tracking will stop - psrThreshold
+	args.push_back("1"); //amount of pixels that are deleted for psr calculation around the peak (1 means that a window
+						 //of 3 by 3 is deleted; 0 means that max response is deleted; 2 * peak_del + 1 pixels are deleted)
+						 // - psrPeakDel
+	args.push_back("100"); //template size - templateSize
 
-  while (1)
-  {
-    cap >> frame;
+	args.push_back("true"); //enableTrackingLossDetection
+	args.push_back("false"); //Use the original parameters found in the DSST paper. Performance is close,
+							 //but differences do still exist! - originalVersion
 
-    // Check if grabbed frame is actually full with some content
-    if (!frame.empty())
-    {
-      //problem in fhog memory deallocation with 1-channel (gray)
-    	tracker.TrackMonocular(frame, 1);
-    }
+	DSSTVisualTracker tracker;
+	tracker.Init(args, camera, init_ROI);
 
-    usleep(500);
-  }
+	while (1) {
+		cap >> frame;
 
-  return 0;
+		// Check if grabbed frame is actually full with some content
+		if (!frame.empty()) {
+			//problem in fhog memory deallocation with 1-channel (gray)
+			tracker.TrackMonocular(frame, 1);
+		}
+
+		usleep(500);
+	}
+
+	return 0;
 }
