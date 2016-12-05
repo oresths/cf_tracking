@@ -56,7 +56,7 @@ if(WIN32)
 endif(WIN32)
 
 set(OpenCV_STATIC OFF)
-find_package(OpenCV REQUIRED HINTS ${OPENCV_DIR_HINT})
+find_package(OpenCV 2.4.9 REQUIRED HINTS ${OPENCV_DIR_HINT})
 
 # add 3rdparty source
 set(CF_TCLAP_DIR "src/3rdparty/tclap")

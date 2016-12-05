@@ -73,7 +73,7 @@ T calcPsr(const cv::Mat &response, const cv::Point2i &maxResponseIdx, const int 
     cv::rectangle(sideLobe,
         cv::Point2i(maxResponseIdx.x - deletionRange, maxResponseIdx.y - deletionRange),
         cv::Point2i(maxResponseIdx.x + deletionRange, maxResponseIdx.y + deletionRange),
-        cv::Scalar(0), cv::FILLED);
+        cv::Scalar(0), CV_FILLED);
 
     cv::Scalar mean_;
     cv::Scalar std_;

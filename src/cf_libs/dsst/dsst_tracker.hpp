@@ -50,7 +50,7 @@ References:
 in Proc. BMVC, 2014.
 
 [2] D. Bolme, et al.,
-“Visual Object Tracking using Adaptive Correlation Filters,”
+ï¿½Visual Object Tracking using Adaptive Correlation Filters,ï¿½
 in Proc. CVPR, 2010.
 */
 
@@ -59,7 +59,7 @@ in Proc. CVPR, 2010.
 
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/core/core.hpp>
-#include <opencv2/core/traits.hpp>
+//#include <opencv2/core/traits.hpp>
 #include <memory>
 #include <iostream>
 #include <fstream>

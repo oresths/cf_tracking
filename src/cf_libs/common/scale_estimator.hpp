@@ -52,7 +52,7 @@ in Proc. BMVC, 2014.
 #define SCALE_ESTIMATOR_HPP_
 
 #include <opencv2/core/core.hpp>
-#include <opencv2/core/traits.hpp>
+//#include <opencv2/core/traits.hpp>
 #include <algorithm>
 
 #include "mat_consts.hpp"
@@ -191,7 +191,7 @@ namespace cf_tracking
             dft(xs, xsf, cv::DFT_ROWS);
 
             mulSpectrums(_sfNumerator, xsf, xsf, cv::DFT_ROWS);
-            reduce(xsf, xsf, 0, cv::REDUCE_SUM, -1);
+            reduce(xsf, xsf, 0, CV_REDUCE_SUM, -1);
 
             cv::Mat sfDenLambda;
             sfDenLambda = addRealToSpectrum<T>(_LAMBDA, _sfDenominator, cv::DFT_ROWS);
@@ -244,7 +244,7 @@ namespace cf_tracking
             mulSpectrums(_ysf, xsf, sfNum, cv::DFT_ROWS, true);
             cv::Mat mulTemp;
             mulSpectrums(xsf, xsf, mulTemp, cv::DFT_ROWS, true);
-            reduce(mulTemp, sfDen, 0, cv::REDUCE_SUM, -1);
+            reduce(mulTemp, sfDen, 0, CV_REDUCE_SUM, -1);
             return true;
         }
 

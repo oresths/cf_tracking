@@ -41,6 +41,7 @@
 #define SHIFT_HPP_
 
 #include <opencv2/core/core.hpp>
+#include "opencv2/imgproc/imgproc.hpp"
 
 void shift(const cv::Mat& src, cv::Mat& dst, cv::Point2f delta,
     int fill = cv::BORDER_CONSTANT,

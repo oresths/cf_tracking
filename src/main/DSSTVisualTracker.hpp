@@ -35,7 +35,7 @@ private:
 	DsstTrackerRun tracker;
 
 	cv::Rect targetROI;
-	cv::Rect2f initBB;
+	cv::Rect_<float> initBB;
 
 	std::mutex mMutexTar;
 };

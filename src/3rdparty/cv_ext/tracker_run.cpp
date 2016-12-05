@@ -232,7 +232,10 @@ bool TrackerRun::init(const cv::Rect& initialROI, const vector<string> & argumen
 
 	_paras = parseCmdArgs(arguments);
 
-    _paras.initBb = Rect_<double>(initialROI);
+    _paras.initBb = Rect_<double>(static_cast<double>(initialROI.x),
+            static_cast<double>(initialROI.y),
+            static_cast<double>(initialROI.width),
+            static_cast<double>(initialROI.height));
     _paras.showOutput = showOutput;
 
     if (_paras.showOutput)
