@@ -109,9 +109,9 @@ set(CF_MAIN_SOURCES
     ${CF_CV_EXT_DIR}/tracker_run.cpp
     ${CF_TCLAP_DIR}/tclap/CmdLine.h)
 
-#add_executable(DSSTcpp
-add_library(DSSTcpp STATIC
-#    src/main/main_dsst.cpp
+add_executable(DSSTcpp
+#add_library(DSSTcpp STATIC
+    src/main/main_dsst.cpp
     src/cf_libs/dsst/dsst_debug.hpp
     src/cf_libs/dsst/dsst_tracker.hpp
     ${CF_MAIN_SOURCES}
