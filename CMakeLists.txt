@@ -111,7 +111,7 @@ set(CF_MAIN_SOURCES
 
 add_executable(DSSTcpp
 #add_library(DSSTcpp STATIC
-    src/main/main_dsst.cpp
+    src/main/main_vot.cpp
     src/cf_libs/dsst/dsst_debug.hpp
     src/cf_libs/dsst/dsst_tracker.hpp
     ${CF_MAIN_SOURCES}

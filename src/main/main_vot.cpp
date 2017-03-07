@@ -29,22 +29,20 @@
  // the use of this software, even if advised of the possibility of such damage.
  */
 
-#ifdef __linux__
- #include <unistd.h>
-#endif
-
 #include "DSSTVisualTracker.hpp"
+#include "vot.hpp"
 
 int main(int argc, const char** argv) {
-	cv::VideoCapture cap(
-			"/mnt/hgfs/Vision/Dataset UAV123/UAV123/data_seq/UAV123/bike1/%06d.jpg");
-	// Check if video device can be opened with the given index
-	if (!cap.isOpened())
-		return 1;
+	
+	//load region, images and prepare for output
+    VOT vot_io("region.txt", "images.txt", "output.txt");
+	
+	//img = firts frame, initPos = initial position in the first frame
+    cv::Rect init_rect = vot_io.getInitRectangle();
+    vot_io.outputBoundingBox(init_rect);
+	
+	cv::Mat image;
 
-	cv::Mat frame;
-
-	cv::Rect initialROI(707, 362, 40, 97);
 	std::vector<std::string> args;
 
 	args.push_back("1.6"); //padding around the target - padding
@@ -66,23 +64,37 @@ int main(int argc, const char** argv) {
 	args.push_back("false"); //Use the original parameters found in the DSST paper. Performance is close,
 							 //but differences do still exist! - originalVersion
 
-	DSSTVisualTracker tracker(args, initialROI);
+	DSSTVisualTracker tracker(args, init_rect);
 
-	while (1) {
-		cap >> frame;
-
-		// Check if grabbed frame is actually full with some content
-		if (!frame.empty()) {
-			//problem in fhog memory deallocation with 1-channel (gray)
-			tracker.TrackMonocular(frame);
-		}
-
-		#ifdef __linux__ 
-		usleep(500);
-		#elif _WIN32
-		// windows code goes here
-		#endif
+	double avg_time = 0.;
+    int frames = 0;
+	cv::Rect bounding_box;
+    while (vot_io.getNextImage(image) == 1){
+		double time_profile_counter = cv::getCPUTickCount();
+		
+		//problem in fhog memory deallocation with 1-channel (gray)
+		bounding_box = tracker.TrackMonocular(image);
+			
+		time_profile_counter = cv::getCPUTickCount() - time_profile_counter;
+        //std::cout << "  -> speed : " <<  time_profile_counter/((double)cvGetTickFrequency()*1000) << "ms. per frame" << std::endl;
+        avg_time += time_profile_counter/((double)cvGetTickFrequency()*1000);
+        frames++;
+		
+		vot_io.outputBoundingBox(bounding_box);
 	}
+	
+	std::cout << "Average processing speed " << avg_time/frames <<  "ms. (" << 1./(avg_time/frames)*1000 << " fps)" << std::endl;
 
-	return 0;
+	std::string output = "fps.txt";
+	std::ofstream fps_ofstream;
+
+	fps_ofstream.open(output.c_str());
+	if (!fps_ofstream.is_open())
+		std::cerr << "Error opening output file " << output << "!" << std::endl;
+
+	fps_ofstream << 1. / (avg_time / frames) * 1000 << std::endl;
+
+	fps_ofstream.close();
+
+	return EXIT_SUCCESS;
 }

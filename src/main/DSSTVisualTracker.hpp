@@ -12,7 +12,8 @@
 
 class DSSTVisualTracker {
 public:
-	DSSTVisualTracker();
+	DSSTVisualTracker::DSSTVisualTracker(const cv::Rect &initialROI);
+	DSSTVisualTracker::DSSTVisualTracker(const std::vector<std::string> &args, const cv::Rect &initialROI);
 	
 	~DSSTVisualTracker();
 

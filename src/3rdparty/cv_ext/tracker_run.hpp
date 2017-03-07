@@ -107,7 +107,7 @@ private:
     std::string _windowTitle;
     Parameters _paras;
     cv::Rect_<double> _boundingBox;
-    ImageAcquisition _cap;
+//    ImageAcquisition _cap;
     std::ofstream _resultsFile;
     TCLAP::CmdLine _cmd;
     cf_tracking::TrackerDebug* _debug;

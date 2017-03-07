@@ -1,9 +1,8 @@
 #include "DSSTVisualTracker.hpp"
 //#include <unistd.h>
 
-DSSTVisualTracker::DSSTVisualTracker()
+DSSTVisualTracker::DSSTVisualTracker(const cv::Rect &initialROI)
 {
-	cv::Rect init_ROI(707, 362, 40, 97);
 	std::vector<std::string> args;
 
 	args.push_back("1.6"); //padding around the target - padding
@@ -25,7 +24,12 @@ DSSTVisualTracker::DSSTVisualTracker()
 	args.push_back("true"); //Use the original parameters found in the DSST paper. Performance is close,
 	//but differences do still exist! - originalVersion
 
-	Init(args, init_ROI);
+	Init(args, initialROI);
+}
+
+DSSTVisualTracker::DSSTVisualTracker(const std::vector<std::string> &args, const cv::Rect &initialROI)
+{
+	Init(args, initialROI);
 }
 
 DSSTVisualTracker::~DSSTVisualTracker()

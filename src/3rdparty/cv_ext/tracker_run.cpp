@@ -285,7 +285,7 @@ bool TrackerRun::run()
             break;
     }
 
-    _cap.release();
+//    _cap.release();
 
     return true;
 }
