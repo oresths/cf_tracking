@@ -55,8 +55,8 @@ if(WIN32)
     get_filename_component(OPENCV_DIR_HINT ${OPENCV_DIR_PLATFORM} DIRECTORY)
 endif(WIN32)
 
-set(OpenCV_STATIC OFF)
-find_package(OpenCV REQUIRED HINTS ${OPENCV_DIR_HINT})
+set(OpenCV_STATIC ON)
+find_package(OpenCV 3.1 REQUIRED HINTS ${OPENCV_DIR_HINT})
 
 # add 3rdparty source
 set(CF_TCLAP_DIR "src/3rdparty/tclap")
@@ -64,6 +64,7 @@ set(CF_CV_EXT_DIR "src/3rdparty/cv_ext")
 set(CF_PIOTR_DIR "src/3rdparty/piotr")
 
 include_directories(${OpenCV_DIR}/include)
+#include_directories(src/3rdparty/includes/opencvinclude)
 include_directories(${CF_TCLAP_DIR}
                     ${CF_CV_EXT_DIR}
                     ${CF_PIOTR_DIR}
@@ -99,8 +100,8 @@ set(CF_LIB_COMMON_SOURCES
     ${CF_PIOTR_SOURCES})
 
 set(CF_MAIN_SOURCES
-    src/main/image_acquisition.hpp
-    src/main/image_acquisition.cpp
+#    src/main/image_acquisition.hpp
+#    src/main/image_acquisition.cpp
     src/main/DSSTVisualTracker.cpp
     ${CF_CV_EXT_DIR}/init_box_selector.hpp
     ${CF_CV_EXT_DIR}/init_box_selector.cpp
@@ -108,12 +109,16 @@ set(CF_MAIN_SOURCES
     ${CF_CV_EXT_DIR}/tracker_run.cpp
     ${CF_TCLAP_DIR}/tclap/CmdLine.h)
 
-add_executable(DSSTcpp
-    src/main/main_dsst.cpp
+#add_executable(DSSTcpp
+add_library(DSSTcpp STATIC
+#    src/main/main_dsst.cpp
     src/cf_libs/dsst/dsst_debug.hpp
     src/cf_libs/dsst/dsst_tracker.hpp
     ${CF_MAIN_SOURCES}
     ${CF_LIB_COMMON_SOURCES})
+	
+#set(OpenCV_LIBS 
+#	)
 target_link_libraries(DSSTcpp ${OpenCV_LIBS})
 
 

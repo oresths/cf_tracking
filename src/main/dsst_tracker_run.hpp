@@ -51,7 +51,7 @@ public:
   {
   }
 
-  virtual cf_tracking::CfTracker* parseTrackerParas(const vector<string> & arguments)
+  virtual cf_tracking::CfTracker* parseTrackerParas(const std::vector<std::string> & arguments)
   {
     cf_tracking::DsstParameters paras;
 
@@ -84,19 +84,19 @@ public:
 //
 //        cmd.parse(argc, argv);
 
-    paras.padding = static_cast<double>(stod(arguments[0]));
-	paras.outputSigmaFactor = static_cast<double>(stod(arguments[1]));
-	paras.lambda = static_cast<double>(stod(arguments[2]));
-	paras.learningRate = static_cast<double>(stod(arguments[3]));
-	paras.cellSize = static_cast<int>(stoi(arguments[4]));
+	paras.padding = static_cast<double>(std::stod(arguments[0]));
+	paras.outputSigmaFactor = static_cast<double>(std::stod(arguments[1]));
+	paras.lambda = static_cast<double>(std::stod(arguments[2]));
+	paras.learningRate = static_cast<double>(std::stod(arguments[3]));
+	paras.cellSize = static_cast<int>(std::stoi(arguments[4]));
 
-	paras.scaleSigmaFactor = static_cast<double>(stod(arguments[5]));
-	paras.scaleStep = static_cast<double>(stod(arguments[6]));
-	paras.scaleCellSize = static_cast<int>(stoi(arguments[7]));
-	paras.numberOfScales = static_cast<int>(stoi(arguments[8]));
-	paras.psrThreshold = static_cast<double>(stod(arguments[9]));
-	paras.psrPeakDel = static_cast<int>(stoi(arguments[10]));
-	paras.templateSize = static_cast<int>(stoi(arguments[11]));
+	paras.scaleSigmaFactor = static_cast<double>(std::stod(arguments[5]));
+	paras.scaleStep = static_cast<double>(std::stod(arguments[6]));
+	paras.scaleCellSize = static_cast<int>(std::stoi(arguments[7]));
+	paras.numberOfScales = static_cast<int>(std::stoi(arguments[8]));
+	paras.psrThreshold = static_cast<double>(std::stod(arguments[9]));
+	paras.psrPeakDel = static_cast<int>(std::stoi(arguments[10]));
+	paras.templateSize = static_cast<int>(std::stoi(arguments[11]));
 
 	bool enableTrackingLossDetection = false, originalVersion = false;
 

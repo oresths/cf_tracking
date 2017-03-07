@@ -1,43 +1,28 @@
 #ifndef SRC_MAIN_DSSTVISUALTRACKER_HPP_
 #define SRC_MAIN_DSSTVISUALTRACKER_HPP_
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/features2d/features2d.hpp>
-#include <thread>
-#include <mutex>
-#include <fstream>
-#include "../VisualTracker.hpp"
-//#include "STRUCK/Config.h"
+//#include <opencv2/core/core.hpp>
+#include <opencv2/core.hpp>
+//#include <opencv2/features2d/features2d.hpp>
+#include <opencv2/features2d.hpp>
 #include "dsst_tracker_run.hpp"
+//#include <opencv2/imgproc/imgproc.hpp>
+#include <vector>
+#include <string>
 
-class DSSTVisualTracker: public VisualTracker {
+class DSSTVisualTracker {
 public:
 	DSSTVisualTracker();
+	
+	~DSSTVisualTracker();
 
-	void Init(const vector<string> &arguments, const eSensor sensor,
-			const cv::Rect& initialROI);
-
-	void TrackMonocular(const cv::Mat &im, const double &timestamp);
-
-	void TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight,
-			const double &timestamp);
-
-	void TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap,
-			const double &timestamp);
-
-	void Shutdown();
-
-	cv::Rect GetCurrentROI();
-
-	bool isFinished();
-
+	cv::Rect TrackMonocular(const cv::Mat &im);
+	
 private:
+	void Init(const std::vector<std::string>& arguments, const cv::Rect& initialROI);
+	void cleanup();
+
 	DsstTrackerRun tracker;
-
-	cv::Rect targetROI;
-	cv::Rect2f initBB;
-
-	std::mutex mMutexTar;
 };
 
 #endif /* SRC_MAIN_DSSTVISUALTRACKER_HPP_ */
