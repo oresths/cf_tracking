@@ -39,7 +39,6 @@ int main(int argc, const char** argv) {
 	
 	//img = firts frame, initPos = initial position in the first frame
     cv::Rect init_rect = vot_io.getInitRectangle();
-    vot_io.outputBoundingBox(init_rect);
 	
 	cv::Mat image;
 
